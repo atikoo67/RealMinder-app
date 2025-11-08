@@ -18,7 +18,7 @@ ThemeData theme = ThemeData(
   ),
   colorScheme: ColorScheme.light(
     primary: const Color.fromARGB(255, 220, 123, 4),
-    secondary: Color.fromRGBO(233, 233, 233, 1),
+    secondary: Color.fromRGBO(255, 255, 255, 1),
     tertiary: Color.fromRGBO(64, 68, 67, 1.0),
     outline: Color.fromRGBO(0, 136, 204, 1.0),
     error: Color.fromRGBO(255, 0, 0, 1.0),
