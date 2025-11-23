@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:realminder/core/constants/lists.dart';
 import 'package:realminder/core/theme/theme.dart';
+import 'package:realminder/data/models/model.dart';
+import 'package:realminder/presentation/providers/notifier.dart';
 
-class ReminderCard extends StatelessWidget {
-  const ReminderCard({super.key});
+class ReminderCard extends ConsumerWidget {
+  final ReminderModel model;
+  final int index;
+  const ReminderCard({super.key, required this.model, required this.index});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
       margin: EdgeInsets.symmetric(vertical: 8),
@@ -18,42 +24,61 @@ class ReminderCard extends StatelessWidget {
       ),
       child: Row(
         spacing: 15,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Icon(Icons.lightbulb_outline_rounded, size: 25),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Row(
+            spacing: 20,
             children: [
-              Text(
-                'Morning Meditation',
-                style: theme.textTheme.titleLarge!.copyWith(fontSize: 18),
-              ),
-              Row(
-                spacing: 10,
+              Icon(ConstantLists.labelsenum[model.reminderType]![1], size: 25),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.alarm,
-                        size: 12,
-                        color: theme.textTheme.titleSmall!.color,
-                      ),
-                      Text('3:00 AM', style: theme.textTheme.titleSmall),
-                    ],
+                  Text(
+                    model.title,
+                    style: theme.textTheme.titleLarge!.copyWith(fontSize: 18),
                   ),
                   Row(
+                    spacing: 10,
                     children: [
-                      Icon(
-                        Icons.repeat,
-                        size: 12,
-                        color: theme.textTheme.titleSmall!.color,
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.alarm,
+                            size: 12,
+                            color: theme.textTheme.titleSmall!.color,
+                          ),
+                          Text(
+                            model.timeofday.format(context),
+                            style: theme.textTheme.titleSmall,
+                          ),
+                        ],
                       ),
-                      Text('Daily', style: theme.textTheme.titleSmall),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.repeat,
+                            size: 12,
+                            color: theme.textTheme.titleSmall!.color,
+                          ),
+                          Text(
+                            ConstantLists.intervalrepeatenum[model
+                                .repeatInterval]!,
+                            style: theme.textTheme.titleSmall,
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ],
               ),
             ],
+          ),
+          IconButton(
+            onPressed: () {
+              ref.read(reminderProvider.notifier).delete(index);
+            },
+            icon: Icon(Icons.delete),
           ),
         ],
       ),

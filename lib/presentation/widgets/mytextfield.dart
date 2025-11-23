@@ -15,21 +15,31 @@ class MyTextField extends StatelessWidget {
       style: TextStyle(fontSize: 15),
       decoration: InputDecoration(
         enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(width: 0.4),
+          borderSide: BorderSide(
+            width: 0.4,
+            color: const Color.fromARGB(186, 154, 154, 154),
+          ),
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
         disabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(width: 0.4),
+          borderSide: BorderSide(
+            width: 0.4,
+            color: const Color.fromARGB(186, 154, 154, 154),
+          ),
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(width: 0.4),
+          borderSide: BorderSide(
+            width: 0.4,
+            color: const Color.fromARGB(186, 154, 154, 154),
+          ),
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
         contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         // filled: true,
         // fillColor: theme.colorScheme.secondary,
         hintText: label,
+        hintStyle: TextStyle(color: const Color.fromARGB(185, 96, 96, 96)),
       ),
       onChanged: (value) {},
     );

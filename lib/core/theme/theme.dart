@@ -6,12 +6,12 @@ ThemeData theme = ThemeData(
   textTheme: TextTheme(
     titleLarge: TextStyle(
       color: Color.fromRGBO(19, 19, 19, 1),
-      fontSize: 25,
+      fontSize: 20,
       fontWeight: FontWeight.bold,
     ),
     titleMedium: TextStyle(
       color: Color.fromRGBO(19, 19, 19, 1),
-      fontSize: 15,
+      fontSize: 17,
       fontWeight: FontWeight.w500,
     ),
     titleSmall: TextStyle(color: Color.fromRGBO(64, 68, 67, 1.0), fontSize: 12),

@@ -1,76 +1,88 @@
-// import 'package:realminder/data/datasources/reminderentity.dart';
-// import '../datasources/recurrence_pattern.dart';
-// import '../datasources/media_file.dart';
+import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-// class Reminder {
-//   final String id;
-//   final String title;
-//   final String description;
-//   final DateTime dateTime;
-//   final bool isActive;
-//   final RecurrencePattern recurrence;
-//   final List<MediaFile> mediaFiles;
-//   final DateTime nextTriggerDate;
-//   final bool isSnoozed;
-//   final DateTime? snoozedUntil;
-//   final int snoozeCount;
+part 'model.g.dart';
 
-//   Reminder({
-//     required this.id,
-//     required this.title,
-//     required this.description,
-//     required this.dateTime,
-//     required this.isActive,
-//     required this.recurrence,
-//     required this.mediaFiles,
-//     required this.nextTriggerDate,
-//     required this.isSnoozed,
-//     required this.snoozedUntil,
-//     required this.snoozeCount,
-//   });
+@HiveType(typeId: 0)
+enum RepeatInterval {
+  @HiveField(0)
+  once,
+  @HiveField(1)
+  weekly,
+  @HiveField(2)
+  monthly,
+  @HiveField(3)
+  daily,
+}
 
-//   // Convert from Entity
-//   factory Reminder.fromEntity(ReminderEntity entity) {
-//     return Reminder(
-//       id: entity.id,
-//       title: entity.title,
-//       description: entity.description,
-//       dateTime: entity.dateTime,
-//       isActive: entity.isActive,
-//       recurrence: entity.recurrence,
-//       mediaFiles: entity.mediaFiles,
-//       nextTriggerDate: entity.nextTriggerDate,
-//       isSnoozed: entity.isSnoozed,
-//       snoozedUntil: entity.snoozedUntil,
-//       snoozeCount: entity.snoozeCount,
-//     );
-//   }
+@HiveType(typeId: 1)
+enum ReminderType {
+  @HiveField(0)
+  work,
+  @HiveField(1)
+  personal,
+  @HiveField(2)
+  health,
+  @HiveField(3)
+  education,
+}
 
-//   // Convert to Entity
-//   ReminderEntity toEntity() {
-//     return ReminderEntity(
-//       id: id,
-//       title: title,
-//       description: description,
-//       dateTime: dateTime,
-//       isActive: isActive,
-//       recurrence: recurrence,
-//       mediaFiles: mediaFiles,
-//       isSnoozed: isSnoozed,
-//       snoozedUntil: snoozedUntil,
-//       snoozeCount: snoozeCount,
-//     );
-//   }
+@HiveType(typeId: 2)
+enum NotificationStatus {
+  @HiveField(0)
+  confirm,
+  @HiveField(1)
+  snooze,
+  @HiveField(2)
+  cancel,
+  @HiveField(4)
+  pending,
+}
 
-//   // Business logic methods
-//   bool get shouldTriggerAlarm {
-//     final now = DateTime.now();
-//     return isActive &&
-//         !isSnoozed &&
-//         (now.isAfter(nextTriggerDate) || now.isAtSameMomentAs(nextTriggerDate));
-//   }
+@HiveType(typeId: 3)
+class ReminderModel extends HiveObject {
+  @HiveField(0)
+  String title;
 
-//   bool get isRecurring => recurrence.type != RecurrenceType.none;
+  @HiveField(1)
+  String description;
 
-//   // Add more business methods as needed...
-// }
+  @HiveField(2)
+  TimeOfDay timeofday;
+
+  @HiveField(3)
+  RepeatInterval repeatInterval;
+
+  @HiveField(4)
+  ReminderType reminderType;
+
+  @HiveField(5)
+  int priority;
+
+  @HiveField(6)
+  NotificationStatus notificationStatus;
+
+  @HiveField(7)
+  String? imagePath;
+
+  @HiveField(8)
+  String? videoPath;
+  @HiveField(9)
+  List<String>? customDays;
+  @HiveField(10)
+  DateTime? dateTime;
+
+  ReminderModel({
+    required this.title,
+    required this.description,
+    required this.timeofday,
+    required this.repeatInterval,
+    required this.reminderType,
+    required this.priority,
+    required this.notificationStatus,
+    this.imagePath,
+    this.videoPath,
+    this.customDays,
+    this.dateTime,
+  });
+}
