@@ -24,18 +24,33 @@ class _CreateReminderState extends ConsumerState<CreateReminder> {
   TextEditingController descriptioncontroller = TextEditingController();
   TextEditingController titlecontroller = TextEditingController();
   DateTime? dateTime;
-  TimeOfDay? time;
+  TimeOfDay time = TimeOfDay.now();
   RepeatInterval? repeatInterval;
   ReminderType? reminderType;
   int? priority;
   NotificationStatus? notificationStatus;
   String? imagePath;
-  String? selectedDay;
+  bool _continue = false;
+  String selectedDay = '';
   Map<String, XFile?> mediapath = {};
 
   String? videoPath;
 
   List<String>? customDays;
+  @override
+  void initState() {
+    super.initState();
+    titlecontroller.addListener(_update);
+    descriptioncontroller.addListener(_update);
+  }
+
+  void _update() {
+    setState(() {
+      _continue =
+          titlecontroller.text.isNotEmpty &&
+          descriptioncontroller.text.isNotEmpty;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -147,7 +162,9 @@ class _CreateReminderState extends ConsumerState<CreateReminder> {
                         });
                       },
                       onTimeChanged: (TimeOfDay? time) {
-                        time = time;
+                        setState(() {
+                          time = time;
+                        });
                       },
                     ),
                   ],
@@ -259,6 +276,12 @@ class _CreateReminderState extends ConsumerState<CreateReminder> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     spacing: 10,
                     children: [
+                      Text(
+                        'Every',
+                        style: theme.textTheme.titleMedium!.copyWith(
+                          fontSize: 12,
+                        ),
+                      ),
                       CustomChipsGroup(
                         items: ConstantLists.days,
                         defaultSelected: [ConstantLists.days.first],
@@ -334,31 +357,35 @@ class _CreateReminderState extends ConsumerState<CreateReminder> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: MyButton(
-              color: theme.colorScheme.primary,
+              color: _continue
+                  ? theme.colorScheme.primary
+                  : const Color.fromARGB(255, 164, 164, 163),
               onTap: () async {
-                final video = mediapath['video'];
-                final image = mediapath['image'];
-                if (video != null) {
-                  videoPath = await MediaManager.selectAndSaveVideo(video);
+                if (_continue) {
+                  final video = mediapath['video'];
+                  final image = mediapath['image'];
+                  if (video != null) {
+                    videoPath = await MediaManager.selectAndSaveVideo(video);
+                  }
+                  if (image != null) {
+                    imagePath = await MediaManager.selectAndSaveImage(video);
+                  }
+                  final reminder = ReminderModel(
+                    title: titlecontroller.text,
+                    description: descriptioncontroller.text,
+                    dateTime: dateTime,
+                    repeatInterval: repeatInterval ?? RepeatInterval.once,
+                    reminderType: reminderType ?? ReminderType.personal,
+                    priority: 2,
+                    notificationStatus: NotificationStatus.confirm,
+                    imagePath: imagePath,
+                    customDays: [selectedDay],
+                    videoPath: videoPath,
+                    timeofday: time,
+                  );
+                  ref.read(reminderProvider.notifier).add(reminder);
+                  print('done');
                 }
-                if (image != null) {
-                  imagePath = await MediaManager.selectAndSaveImage(video);
-                }
-                final reminder = ReminderModel(
-                  title: titlecontroller.text,
-                  description: descriptioncontroller.text,
-                  dateTime: dateTime,
-                  repeatInterval: repeatInterval ?? RepeatInterval.once,
-                  reminderType: reminderType ?? ReminderType.personal,
-                  priority: 2,
-                  notificationStatus: NotificationStatus.pending,
-                  imagePath: imagePath,
-                  customDays: [selectedDay!],
-                  videoPath: videoPath,
-                  timeofday: time ?? TimeOfDay.now(),
-                );
-                ref.read(reminderProvider.notifier).add(reminder);
-                print('done');
               },
               child: Text(
                 "Continue",

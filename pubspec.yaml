@@ -54,6 +54,10 @@ dependencies:
   build_runner: ^2.4.13
   hive_flutter: ^1.1.0
   flutter_riverpod: ^3.0.3
+  android_alarm_manager_plus: ^5.0.0
+  flutter_local_notifications: ^19.5.0
+  timezone: ^0.10.1
+  device_info_plus: ^12.3.0
 
 dev_dependencies:
   flutter_test:

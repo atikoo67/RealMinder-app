@@ -1,26 +1,48 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:percent_indicator/flutter_percent_indicator.dart';
 import 'package:realminder/core/theme/theme.dart';
+import 'package:realminder/data/models/model.dart';
+import 'package:realminder/presentation/providers/notifier.dart';
 import 'package:realminder/presentation/widgets/circularbar.dart';
 import 'package:realminder/presentation/widgets/linearbar.dart';
 
-class ReminderTracker extends StatefulWidget {
+class ReminderTracker extends ConsumerStatefulWidget {
   const ReminderTracker({super.key});
 
   @override
-  State<ReminderTracker> createState() => _ReminderTrackerState();
+  ConsumerState<ReminderTracker> createState() => _ReminderTrackerState();
 }
 
-class _ReminderTrackerState extends State<ReminderTracker> {
+class _ReminderTrackerState extends ConsumerState<ReminderTracker> {
   @override
   Widget build(BuildContext context) {
+    final reminders = ref.watch(reminderProvider);
+
+    final typeslist = [
+      ReminderType.work,
+      ReminderType.personal,
+      ReminderType.health,
+      ReminderType.education,
+    ];
+    final remindertypescounts = [
+      for (final type in typeslist)
+        reminders.where((reminder) => reminder.reminderType == type).length,
+    ];
+    final completionpercent =
+        reminders
+            .where(
+              (reminder) =>
+                  reminder.notificationStatus == NotificationStatus.confirm,
+            )
+            .length /
+        reminders.length;
+
+    print('${remindertypescounts.length} and ${remindertypescounts[1]} ');
     // X-axis categories
     final labels = ['Work', 'Personal', 'Health', 'Education'];
 
-    // Sample values for each day
-    final values = [3.0, 4.5, 2.5, 5.0];
     final barcolor = [
       const Color.fromARGB(255, 62, 85, 0),
       const Color.fromARGB(255, 0, 145, 5),
@@ -43,7 +65,7 @@ class _ReminderTrackerState extends State<ReminderTracker> {
             Column(
               spacing: 10,
               children: [
-                CircularBar(),
+                CircularBar(percent: completionpercent),
                 LinearBar(),
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 45, horizontal: 20),
@@ -128,19 +150,23 @@ class _ReminderTrackerState extends State<ReminderTracker> {
                               ),
                             ),
                             borderData: FlBorderData(show: false),
-                            barGroups: List.generate(values.length, (index) {
-                              return BarChartGroupData(
-                                x: index,
-                                barRods: [
-                                  BarChartRodData(
-                                    toY: values[index],
-                                    color: barcolor[index],
-                                    borderRadius: BorderRadius.circular(4),
-                                    width: 50,
-                                  ),
-                                ],
-                              );
-                            }),
+                            barGroups: List.generate(
+                              remindertypescounts.length,
+                              (index) {
+                                return BarChartGroupData(
+                                  x: index,
+                                  barRods: [
+                                    BarChartRodData(
+                                      toY: remindertypescounts[index]
+                                          .toDouble(),
+                                      color: barcolor[index],
+                                      borderRadius: BorderRadius.circular(4),
+                                      width: 50,
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
                           ),
                         ),
                       ),

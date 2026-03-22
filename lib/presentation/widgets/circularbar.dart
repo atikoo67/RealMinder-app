@@ -4,7 +4,8 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:realminder/core/theme/theme.dart';
 
 class CircularBar extends StatelessWidget {
-  const CircularBar({super.key});
+  final double percent;
+  const CircularBar({super.key, required this.percent});
 
   @override
   Widget build(BuildContext context) {
@@ -34,12 +35,12 @@ class CircularBar extends StatelessWidget {
             animation: true,
             animationDuration: 1200,
             lineWidth: 20.0,
-            percent: 0.85,
+            percent: percent,
             center: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "85%",
+                  "${(percent * 100).toStringAsFixed(1)}%",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: theme.colorScheme.primary,
@@ -50,7 +51,7 @@ class CircularBar extends StatelessWidget {
               ],
             ),
             circularStrokeCap: CircularStrokeCap.butt,
-            backgroundColor: const Color.fromARGB(255, 255, 157, 0),
+            backgroundColor: const Color.fromARGB(255, 243, 177, 70),
             progressColor: theme.colorScheme.primary,
           ),
 
@@ -58,10 +59,10 @@ class CircularBar extends StatelessWidget {
             animation: true,
             animationDuration: 1200,
             lineHeight: 8,
-            percent: 0.85,
+            percent: percent,
             barRadius: Radius.circular(8),
 
-            backgroundColor: const Color.fromARGB(255, 255, 157, 0),
+            backgroundColor: const Color.fromARGB(255, 243, 177, 70),
             progressColor: theme.colorScheme.primary,
           ),
         ],
